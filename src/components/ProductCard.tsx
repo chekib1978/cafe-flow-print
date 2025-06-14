@@ -1,9 +1,10 @@
 
-import { Plus, Minus } from "lucide-react";
+import { Plus, Minus, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { ProductWithCategory } from "@/types/database";
+import { CATEGORY_COLORS, formatPrice } from "@/types/database";
 
 interface ProductCardProps {
   product: ProductWithCategory;
@@ -13,52 +14,89 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuantity }: ProductCardProps) {
+  const categoryColor = product.category?.name 
+    ? CATEGORY_COLORS[product.category.name as keyof typeof CATEGORY_COLORS] || CATEGORY_COLORS.default
+    : CATEGORY_COLORS.default;
+
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border-0 shadow-md bg-white/80 backdrop-blur-sm">
-      <CardContent className="p-4">
-        <div className="space-y-3">
+    <Card className="group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-0 shadow-lg bg-white/90 backdrop-blur-md overflow-hidden relative">
+      {/* Gradient de catégorie en arrière-plan */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${categoryColor} opacity-5 group-hover:opacity-10 transition-opacity duration-300`} />
+      
+      <CardContent className="p-5 relative">
+        <div className="space-y-4">
+          {/* En-tête avec icône */}
           <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <h3 className="font-semibold text-gray-800 text-sm leading-tight">{product.name}</h3>
-              <Badge variant="secondary" className="mt-1 text-xs bg-blue-100 text-blue-700">
+            <div className="flex-1 space-y-2">
+              <div className="flex items-center gap-2">
+                <Package className="w-4 h-4 text-gray-400" />
+                <h3 className="font-bold text-gray-800 text-base leading-tight group-hover:text-gray-900 transition-colors">
+                  {product.name}
+                </h3>
+              </div>
+              <Badge 
+                variant="secondary" 
+                className={`text-xs bg-gradient-to-r ${categoryColor} text-white border-0 shadow-sm`}
+              >
                 {product.category?.name || 'Sans catégorie'}
               </Badge>
             </div>
-            <div className="text-right">
-              <p className="text-lg font-bold text-green-600">{product.price.toFixed(2)}€</p>
-              <p className="text-xs text-gray-500">Stock: {product.stock}</p>
+          </div>
+
+          {/* Prix et stock */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <p className="text-xl font-bold text-emerald-600 tracking-tight">
+                {formatPrice(product.price)}
+              </p>
+              <div className="text-right">
+                <p className="text-xs text-gray-500 font-medium">
+                  Stock: <span className={`${product.stock <= 5 ? 'text-red-500' : 'text-green-600'} font-bold`}>
+                    {product.stock}
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
           
-          <div className="flex items-center justify-between pt-2">
+          {/* Actions */}
+          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
             {cartQuantity > 0 ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 w-full">
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => onRemoveFromCart(product.id)}
-                  className="h-8 w-8 p-0 rounded-full border-red-200 hover:border-red-300 hover:bg-red-50"
+                  className="h-9 w-9 p-0 rounded-full border-red-200 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
                 >
-                  <Minus className="w-3 h-3 text-red-500" />
+                  <Minus className="w-4 h-4" />
                 </Button>
-                <span className="w-8 text-center font-semibold text-gray-700">{cartQuantity}</span>
+                
+                <div className="flex-1 text-center">
+                  <div className="bg-gray-100 rounded-lg px-4 py-2">
+                    <span className="font-bold text-gray-800 text-lg">{cartQuantity}</span>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Total: {formatPrice(product.price * cartQuantity)}
+                    </p>
+                  </div>
+                </div>
+                
                 <Button
                   size="sm"
                   onClick={() => onAddToCart(product)}
                   disabled={product.stock <= cartQuantity}
-                  className="h-8 w-8 p-0 rounded-full bg-green-500 hover:bg-green-600"
+                  className={`h-9 w-9 p-0 rounded-full bg-gradient-to-r ${categoryColor} hover:shadow-lg transition-all duration-200 transform hover:scale-110 disabled:opacity-50 disabled:transform-none`}
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-4 h-4" />
                 </Button>
               </div>
             ) : (
               <Button
-                size="sm"
                 onClick={() => onAddToCart(product)}
                 disabled={product.stock === 0}
-                className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200"
+                className={`w-full bg-gradient-to-r ${categoryColor} hover:shadow-lg text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none`}
               >
-                Ajouter
+                {product.stock === 0 ? 'Rupture de stock' : 'Ajouter au panier'}
               </Button>
             )}
           </div>

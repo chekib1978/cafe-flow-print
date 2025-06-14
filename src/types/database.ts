@@ -3,6 +3,7 @@ export interface Category {
   id: string;
   name: string;
   created_at: string;
+  color?: string;
 }
 
 export interface Product {
@@ -46,3 +47,16 @@ export interface ProductWithCategory extends Product {
 export interface SaleWithItems extends Sale {
   sale_items: SaleItem[];
 }
+
+export const CATEGORY_COLORS = {
+  'Boissons': 'from-blue-500 to-blue-600',
+  'Snacks': 'from-orange-500 to-orange-600',
+  'Sandwichs': 'from-green-500 to-green-600',
+  'Pâtisseries': 'from-pink-500 to-pink-600',
+  'Plats chauds': 'from-red-500 to-red-600',
+  'default': 'from-gray-500 to-gray-600'
+};
+
+export const formatPrice = (price: number): string => {
+  return `${price.toFixed(3)} TND`;
+};

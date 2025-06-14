@@ -81,7 +81,7 @@ export function useSales() {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       toast({
         title: "Vente validée!",
-        description: `Ticket N°${newSale.ticket_number} - Total: ${newSale.total.toFixed(2)}€`,
+        description: `Ticket N°${newSale.ticket_number} - Total: ${newSale.total.toFixed(3)} TND`,
       });
     },
     onError: (error) => {
