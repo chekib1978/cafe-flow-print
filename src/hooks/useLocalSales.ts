@@ -1,12 +1,11 @@
 
 import { useState, useEffect } from 'react';
-import { localDatabase } from '@/services/database';
+import { localDatabase, CartItem, DatabaseSaleWithItems } from '@/services/database';
 import { useToast } from '@/hooks/use-toast';
-import { CartItem, SaleWithItems } from '@/types/database';
 
 export function useLocalSales() {
   const { toast } = useToast();
-  const [sales, setSales] = useState<SaleWithItems[]>([]);
+  const [sales, setSales] = useState<DatabaseSaleWithItems[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
 
