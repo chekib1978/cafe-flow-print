@@ -17,7 +17,7 @@ interface ProductCreateModalProps {
 export function ProductCreateModal({ open, onClose, categories, onSave }: ProductCreateModalProps) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
-  const [categoryId, setCategoryId] = useState<string | null>(null);
+  const [categoryId, setCategoryId] = useState<string>("none");
   const [stock, setStock] = useState(0);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,14 +27,14 @@ export function ProductCreateModal({ open, onClose, categories, onSave }: Produc
     onSave({
       name: name.trim(),
       price,
-      category_id: categoryId,
+      category_id: categoryId === "none" ? null : categoryId,
       stock
     });
 
     // Reset form
     setName("");
     setPrice(0);
-    setCategoryId(null);
+    setCategoryId("none");
     setStock(0);
   };
 
@@ -42,7 +42,7 @@ export function ProductCreateModal({ open, onClose, categories, onSave }: Produc
     // Reset form when closing
     setName("");
     setPrice(0);
-    setCategoryId(null);
+    setCategoryId("none");
     setStock(0);
     onClose();
   };
@@ -91,12 +91,12 @@ export function ProductCreateModal({ open, onClose, categories, onSave }: Produc
               <Label htmlFor="category" className="text-sm font-medium">
                 Catégorie
               </Label>
-              <Select value={categoryId || ""} onValueChange={(value) => setCategoryId(value || null)}>
+              <Select value={categoryId} onValueChange={setCategoryId}>
                 <SelectTrigger>
                   <SelectValue placeholder="Sélectionner une catégorie" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Sans catégorie</SelectItem>
+                  <SelectItem value="none">Sans catégorie</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category.id} value={category.id}>
                       {category.name}
