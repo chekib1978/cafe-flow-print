@@ -216,7 +216,7 @@ class LocalDatabase {
       const sale = stmt.getAsObject();
       // Récupérer les items pour cette vente
       const itemsStmt = this.db.prepare('SELECT * FROM sale_items WHERE sale_id = ?');
-      itemsStmt.bind([sale.id]);
+      itemsStmt.bind([sale.id as string]);
       const saleItems = [];
       while (itemsStmt.step()) {
         saleItems.push(itemsStmt.getAsObject());
