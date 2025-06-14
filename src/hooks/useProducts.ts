@@ -39,6 +39,30 @@ export function useProducts() {
     },
   });
 
+  // Create Product
+  const createProductMutation = useMutation({
+    mutationFn: async (newProduct: { name: string; price: number; category_id: string | null; stock: number }) => {
+      const { error } = await supabase
+        .from('products')
+        .insert([newProduct]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      toast({
+        title: "Article créé",
+        description: "Le nouvel article a été ajouté avec succès.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer cet article.",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Update Product
   const updateProductMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Partial<Product> }) => {
@@ -123,6 +147,10 @@ export function useProducts() {
     deleteProductMutation.mutate(id);
   };
 
+  const createProduct = (newProduct: { name: string; price: number; category_id: string | null; stock: number }) => {
+    createProductMutation.mutate(newProduct);
+  };
+
   return {
     products,
     categories,
@@ -131,5 +159,6 @@ export function useProducts() {
     updateStock,
     updateProduct,
     deleteProduct,
+    createProduct,
   };
 }

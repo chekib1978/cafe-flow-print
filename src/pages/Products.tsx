@@ -1,5 +1,5 @@
 
-import { Package, Loader2 } from "lucide-react";
+import { Package, Loader2, Plus } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useProducts } from "@/hooks/useProducts";
@@ -9,23 +9,31 @@ import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { ProductEditModal } from "@/components/ProductEditModal";
+import { ProductCreateModal } from "@/components/ProductCreateModal";
 
 const Products = () => {
-  const { products, categories, isLoading, error, updateProduct, deleteProduct } = useProducts();
+  const { products, categories, isLoading, error, updateProduct, deleteProduct, createProduct } = useProducts();
 
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
   const handleEdit = (product) => {
     setEditingProduct(product);
     setEditModalOpen(true);
   };
+
   const handleSave = (values) => {
     if (editingProduct) {
       updateProduct(editingProduct.id, values);
     }
     setEditModalOpen(false);
     setEditingProduct(null);
+  };
+
+  const handleCreate = (values) => {
+    createProduct(values);
+    setCreateModalOpen(false);
   };
 
   const handleDelete = (prod) => {
@@ -44,9 +52,16 @@ const Products = () => {
             <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
               Gestion des articles
             </h1>
-            <p className="text-gray-600 mb-2 text-center max-w-md">
+            <p className="text-gray-600 mb-4 text-center max-w-md">
               Retrouvez ici la liste complète et réelle des articles du Cafétéria.
             </p>
+            <Button 
+              onClick={() => setCreateModalOpen(true)}
+              className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white shadow-lg transform hover:scale-105 transition-all duration-200"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Ajouter un nouvel article
+            </Button>
           </div>
           <div className="w-full max-w-4xl bg-white/70 rounded-xl p-6 shadow">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -107,15 +122,23 @@ const Products = () => {
                     })}
                   </tbody>
                 </table>
-                <ProductEditModal
-                  open={editModalOpen}
-                  onClose={() => setEditModalOpen(false)}
-                  product={editingProduct}
-                  onSave={handleSave}
-                />
               </div>
             )}
           </div>
+
+          <ProductEditModal
+            open={editModalOpen}
+            onClose={() => setEditModalOpen(false)}
+            product={editingProduct}
+            onSave={handleSave}
+          />
+
+          <ProductCreateModal
+            open={createModalOpen}
+            onClose={() => setCreateModalOpen(false)}
+            categories={categories}
+            onSave={handleCreate}
+          />
         </main>
       </div>
     </SidebarProvider>
