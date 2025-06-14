@@ -171,7 +171,7 @@ class LocalDatabase {
       const row = stmt.getAsObject();
       products.push({
         ...row,
-        category: row.category_name ? { id: row.category_id, name: row.category_name } : null
+        category: row.category_name ? { id: row.category_id as string, name: row.category_name as string } : null
       });
     }
     stmt.free();
