@@ -7,7 +7,6 @@ export interface CafeteriaSettings {
   id: string;
   name: string;
   address: string;
-  email?: string | null;
   phone?: string | null;
   printer_model?: string | null;
 }

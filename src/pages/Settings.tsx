@@ -23,7 +23,6 @@ const SettingsPage = () => {
   const [values, setValues] = useState({
     name: "",
     address: "",
-    email: "",
     phone: "",
     printer_model: "",
   });
@@ -33,7 +32,6 @@ const SettingsPage = () => {
       setValues({
         name: settings.name ?? "",
         address: settings.address ?? "",
-        email: settings.email ?? "",
         phone: settings.phone ?? "",
         printer_model: settings.printer_model ?? "",
       });
@@ -69,15 +67,9 @@ const SettingsPage = () => {
                 <label className="block text-sm font-medium">Adresse</label>
                 <Input name="address" value={values.address} onChange={handleChange} required />
               </div>
-              <div className="flex gap-3">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium">Email</label>
-                  <Input name="email" value={values.email} onChange={handleChange} type="email" placeholder="exemple@email.com"/>
-                </div>
-                <div className="flex-1">
-                  <label className="block text-sm font-medium">Téléphone</label>
-                  <Input name="phone" value={values.phone} onChange={handleChange} type="tel" placeholder="ex: 555123456" />
-                </div>
+              <div>
+                <label className="block text-sm font-medium">Téléphone</label>
+                <Input name="phone" value={values.phone} onChange={handleChange} type="tel" placeholder="ex: 555123456" />
               </div>
               <div>
                 <label className="block text-sm font-medium">Imprimante à tickets</label>
