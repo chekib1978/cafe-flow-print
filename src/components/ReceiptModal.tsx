@@ -238,11 +238,7 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
             ) : (
               <div className="center store-info">Tel: +216 71 123 456</div>
             )}
-            {settings?.email && settings.email.trim() !== "" ? (
-              <div className="center store-info">Email: {settings.email}</div>
-            ) : (
-              <div className="center store-info">Email: contact@cafeteria-pro.tn</div>
-            )}
+            <div className="center store-info">Email: contact@cafeteria-pro.tn</div>
             {/* Afficher l'imprimante sélectionnée */}
             {selectedPrinter && (
               <div className="center store-info">Imprimante: {selectedPrinter}</div>
