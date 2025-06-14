@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ export function ProductEditModal({ open, onClose, product, onSave }: ProductEdit
   const [price, setPrice] = useState(product?.price || 0);
 
   // Initialize fields when product changes
-  React.useEffect(() => {
+  useEffect(() => {
     setName(product?.name || "");
     setPrice(product?.price || 0);
   }, [product]);

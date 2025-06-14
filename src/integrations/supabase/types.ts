@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      cafeteria_settings: {
+        Row: {
+          address: string
+          created_at: string | null
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          printer_model: string | null
+        }
+        Insert: {
+          address?: string
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          printer_model?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          printer_model?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string | null
