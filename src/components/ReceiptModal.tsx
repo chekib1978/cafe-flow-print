@@ -1,9 +1,11 @@
+
 import { useState, useRef } from "react";
 import { X, Printer, Download, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { SaleWithItems } from "@/types/database";
 import { formatPrice } from "@/types/database";
+import { useCafeteriaSettings } from "@/hooks/useCafeteriaSettings";
 
 interface ReceiptModalProps {
   sale: SaleWithItems | null;
@@ -13,6 +15,9 @@ interface ReceiptModalProps {
 
 export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
   const receiptRef = useRef<HTMLDivElement>(null);
+
+  // Récupère les infos de paramétrage du cafétéria
+  const { settings } = useCafeteriaSettings();
 
   // S'assurer que handlePrint N'EST appelé que sur le bouton Imprimer
   const handlePrint = () => {
@@ -152,13 +157,24 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
         
         <div className="space-y-6">
           <div ref={receiptRef} className="bg-white p-4 font-mono text-sm border rounded-xl shadow-lg">
-            {/* En-tête du magasin */}
-            <div className="center large">CAFETERIA PRO</div>
-            <div className="center store-info">123 Avenue Habib Bourguiba</div>
-            <div className="center store-info">1000 Tunis, Tunisie</div>
-            <div className="center store-info">Tel: +216 71 123 456</div>
-            <div className="center store-info">Email: contact@cafeteria-pro.tn</div>
-            
+            {/* En-tête du magasin : infos dynamiques */}
+            <div className="center large">{settings?.name || "CAFETERIA PRO"}</div>
+            <div className="center store-info">{settings?.address || "123 Avenue Habib Bourguiba"}</div>
+            {settings?.phone && settings.phone.trim() !== "" ? (
+              <div className="center store-info">Tel: {settings.phone}</div>
+            ) : (
+              <div className="center store-info">Tel: +216 71 123 456</div>
+            )}
+            {settings?.email && settings.email.trim() !== "" ? (
+              <div className="center store-info">Email: {settings.email}</div>
+            ) : (
+              <div className="center store-info">Email: contact@cafeteria-pro.tn</div>
+            )}
+            {/* On peut aussi indiquer le modèle d'imprimante s'il est sélectionné */}
+            {settings?.printer_model && settings.printer_model.trim() !== "" && (
+              <div className="center store-info">Imprimante: {settings.printer_model}</div>
+            )}
+
             <div className="separator"></div>
             
             {/* Informations du ticket */}
@@ -208,7 +224,7 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
             
             {/* Pied de page */}
             <div className="center thank-you bold">MERCI DE VOTRE VISITE</div>
-            <div className="center thank-you">A bientot chez Cafeteria Pro</div>
+            <div className="center thank-you">A bientot chez {settings?.name || "Cafeteria Pro"}</div>
             
             <div className="separator"></div>
             
@@ -224,7 +240,7 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
             {/* Impression seulement au clic */}
             <Button 
               onClick={handlePrint} 
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+              className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Printer className="w-4 h-4 mr-2" />
               Imprimer Ticket
