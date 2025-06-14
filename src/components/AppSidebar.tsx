@@ -42,7 +42,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel className="px-4 py-6 text-lg font-bold text-gray-800 flex items-center gap-2">
             <Coffee className="w-6 h-6 text-blue-600" />
-            Cafétéria Pro
+            Café Pro
           </SidebarGroupLabel>
           <SidebarGroupContent className="px-2">
             <SidebarMenu>

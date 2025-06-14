@@ -56,7 +56,7 @@ const SettingsPage = () => {
           <div className="bg-white/80 border rounded-2xl p-8 shadow-lg flex flex-col items-center min-w-[325px] max-w-2xl w-full">
             <SettingsIcon className="w-12 h-12 text-blue-600 mb-4" />
             <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
-              Paramètres Cafétéria Pro
+              Paramètres Café Pro
             </h1>
             <form className="mt-3 w-full max-w-xl space-y-5" onSubmit={handleSubmit}>
               <div>

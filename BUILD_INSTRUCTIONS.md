@@ -9,8 +9,9 @@ Ce projet utilise GitHub Actions pour automatiser le processus de build et de d�
 
 À chaque push sur la branche principale, GitHub Actions génère automatiquement :
 
-1. **cafeteria-app-build** : Build standard pour déploiement web
-2. **cafeteria-app-portable** : Version portable pour clé USB avec scripts de lancement
+1. **cafe-pro-build** : Build standard pour déploiement web
+2. **cafe-pro-portable** : Version portable pour clé USB avec scripts de lancement
+3. **cafe-pro-desktop-windows** : Application desktop Windows (.exe)
 
 ### Comment Télécharger les Builds
 
@@ -19,22 +20,19 @@ Ce projet utilise GitHub Actions pour automatiser le processus de build et de d�
 3. Descendez jusqu'à la section **Artifacts**
 4. Téléchargez l'artifact souhaité
 
-### Application Desktop (Optionnelle)
+### Application Desktop
 
-Pour créer une application desktop Windows, vous pouvez installer Electron séparément :
+L'application desktop est automatiquement buildée avec Electron et disponible en téléchargement :
 
 ```bash
-# Installer Electron pour le développement desktop (optionnel)
-npm install --save-dev electron electron-builder
-
-# Développement desktop (si Electron est installé)
+# Développement desktop local
 npm run electron-dev
 
-# Build desktop Windows (si Electron est installé)
+# Build desktop Windows local
 npm run electron-pack-win
 ```
 
-#### Fonctionnalités Desktop (si configuré)
+#### Fonctionnalités Desktop
 - ✅ **100% hors ligne** (base de données SQLite intégrée)
 - ✅ **Installation native** sur Windows
 - ✅ **Menus natifs** et raccourcis clavier
@@ -43,7 +41,7 @@ npm run electron-pack-win
 
 ### Version Portable
 
-L'artifact `cafeteria-app-portable` contient :
+L'artifact `cafe-pro-portable` contient :
 - Tous les fichiers de l'application
 - `run.bat` pour Windows
 - `README.txt` avec les instructions
@@ -75,10 +73,10 @@ npm run dev
 2. **Portable** : Ouvrez `index.html` ou utilisez le script `run.bat`
 3. **Local** : Utilisez `npm run dev` pour le développement
 
-#### Version Desktop (Optionnelle)
-Si vous avez installé Electron :
-1. **Développement** : `npm run electron-dev`
-2. **Build Windows** : `npm run electron-pack-win`
+#### Version Desktop
+1. **Téléchargement** : Récupérez `cafe-pro-desktop-windows` depuis GitHub Actions
+2. **Installation** : Exécutez le fichier `.exe` téléchargé
+3. **Développement local** : `npm run electron-dev`
 
 ## Configuration GitHub Pages
 
@@ -89,14 +87,15 @@ Pour activer GitHub Pages :
 
 ## Résolution des Problèmes
 
-### Erreurs d'installation Electron
-Si vous rencontrez des erreurs avec Electron :
-1. Electron n'est pas requis pour l'application web principale
-2. Vous pouvez utiliser l'application via GitHub Pages ou en mode portable
-3. L'installation d'Electron est optionnelle pour les fonctionnalités desktop
-
 ### Build qui échoue
 Si le build échoue :
 1. Vérifiez que toutes les dépendances sont installées : `npm ci`
 2. Essayez de nettoyer et réinstaller : `rm -rf node_modules package-lock.json && npm install`
 3. Vérifiez les logs GitHub Actions pour identifier l'erreur précise
+
+### Problèmes Electron
+Si vous rencontrez des erreurs avec Electron :
+1. Assurez-vous que Node.js est en version 18 ou supérieure
+2. Vérifiez que Python et les build tools sont installés pour la compilation native
+3. Consultez les logs détaillés dans GitHub Actions
+

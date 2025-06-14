@@ -1,7 +1,7 @@
 
 {
-  "appId": "com.cafeteria.app",
-  "productName": "Application Cafétéria",
+  "appId": "com.cafepro.app",
+  "productName": "Café Pro",
   "directories": {
     "output": "dist-electron"
   },
@@ -24,13 +24,13 @@
       }
     ],
     "icon": "public/favicon.ico",
-    "artifactName": "cafeteria-app-setup-${version}.${ext}"
+    "artifactName": "cafe-pro-setup-${version}.${ext}"
   },
   "nsis": {
     "oneClick": false,
     "allowToChangeInstallationDirectory": true,
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "shortcutName": "Application Cafétéria"
+    "shortcutName": "Café Pro"
   }
 }
