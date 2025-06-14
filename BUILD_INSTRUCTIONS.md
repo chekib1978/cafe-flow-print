@@ -11,7 +11,6 @@ Ce projet utilise GitHub Actions pour automatiser le processus de build et de d�
 
 1. **cafeteria-app-build** : Build standard pour déploiement web
 2. **cafeteria-app-portable** : Version portable pour clé USB avec scripts de lancement
-3. **cafeteria-app-desktop-windows** : Application desktop Windows (.exe)
 
 ### Comment Télécharger les Builds
 
@@ -20,12 +19,22 @@ Ce projet utilise GitHub Actions pour automatiser le processus de build et de d�
 3. Descendez jusqu'à la section **Artifacts**
 4. Téléchargez l'artifact souhaité
 
-### Application Desktop Windows
+### Application Desktop (Optionnelle)
 
-L'application desktop Windows est créée automatiquement :
-- **Windows** : Installateur `.exe` 
+Pour créer une application desktop Windows, vous pouvez installer Electron séparément :
 
-#### Fonctionnalités Desktop
+```bash
+# Installer Electron pour le développement desktop (optionnel)
+npm install --save-dev electron electron-builder
+
+# Développement desktop (si Electron est installé)
+npm run electron-dev
+
+# Build desktop Windows (si Electron est installé)
+npm run electron-pack-win
+```
+
+#### Fonctionnalités Desktop (si configuré)
 - ✅ **100% hors ligne** (base de données SQLite intégrée)
 - ✅ **Installation native** sur Windows
 - ✅ **Menus natifs** et raccourcis clavier
@@ -55,11 +64,8 @@ npm install
 # Build web
 npm run build
 
-# Build desktop Windows
-npm run electron-pack-win
-
-# Développement desktop
-npm run electron-dev
+# Servir localement
+npm run dev
 ```
 
 ### Utilisation des Applications
@@ -67,9 +73,12 @@ npm run electron-dev
 #### Version Web
 1. **GitHub Pages** : Accès direct via l'URL
 2. **Portable** : Ouvrez `index.html` ou utilisez le script `run.bat`
+3. **Local** : Utilisez `npm run dev` pour le développement
 
-#### Version Desktop Windows
-1. **Windows** : Double-cliquez sur le fichier `.exe` téléchargé pour l'installer
+#### Version Desktop (Optionnelle)
+Si vous avez installé Electron :
+1. **Développement** : `npm run electron-dev`
+2. **Build Windows** : `npm run electron-pack-win`
 
 ## Configuration GitHub Pages
 
@@ -80,7 +89,14 @@ Pour activer GitHub Pages :
 
 ## Résolution des Problèmes
 
+### Erreurs d'installation Electron
+Si vous rencontrez des erreurs avec Electron :
+1. Electron n'est pas requis pour l'application web principale
+2. Vous pouvez utiliser l'application via GitHub Pages ou en mode portable
+3. L'installation d'Electron est optionnelle pour les fonctionnalités desktop
+
+### Build qui échoue
 Si le build échoue :
-1. Vérifiez que les scripts `electron-pack-win` et `electron-dev` existent dans package.json
-2. Assurez-vous qu'Electron et electron-builder sont installés
+1. Vérifiez que toutes les dépendances sont installées : `npm ci`
+2. Essayez de nettoyer et réinstaller : `rm -rf node_modules package-lock.json && npm install`
 3. Vérifiez les logs GitHub Actions pour identifier l'erreur précise

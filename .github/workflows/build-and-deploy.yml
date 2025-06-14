@@ -66,41 +66,6 @@ jobs:
         path: portable-app/
         retention-days: 30
 
-  build-desktop-windows:
-    needs: build
-    runs-on: windows-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Install Electron dependencies
-      run: npm install electron electron-builder --save-dev
-      
-    - name: Build web application first
-      run: npm run build
-      
-    - name: Build Windows Electron app
-      run: npm run electron-pack-win
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
-    - name: Upload Windows build
-      uses: actions/upload-artifact@v4
-      with:
-        name: cafeteria-app-desktop-windows
-        path: dist/*.exe
-        retention-days: 30
-
   deploy-pages:
     needs: build
     runs-on: ubuntu-latest
