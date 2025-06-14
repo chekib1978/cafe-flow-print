@@ -12,7 +12,7 @@ export class CategoriesService extends BaseDatabaseService {
       categories.push({
         id: row.id as string,
         name: row.name as string,
-        created_at: row.created_at as string
+        created_at: row.created_at as string || new Date().toISOString()
       });
     }
     stmt.free();

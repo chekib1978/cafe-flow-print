@@ -2,7 +2,7 @@
 export interface DatabaseCategory {
   id: string;
   name: string;
-  created_at?: string;
+  created_at: string;
 }
 
 export interface DatabaseProduct {
@@ -13,8 +13,8 @@ export interface DatabaseProduct {
   stock: number;
   image_url?: string;
   is_active: boolean;
-  created_at?: string;
-  updated_at?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface DatabaseProductWithCategory extends DatabaseProduct {
@@ -27,7 +27,7 @@ export interface DatabaseSale {
   ticket_number: string;
   total: number;
   items_count: number;
-  created_at?: string;
+  created_at: string;
 }
 
 export interface DatabaseSaleItem {
@@ -51,7 +51,7 @@ export interface DatabaseSettings {
   phone?: string;
   email?: string;
   printer_model?: string;
-  created_at?: string;
+  created_at: string;
 }
 
 export interface CartItem {

@@ -2,12 +2,27 @@
 import { useState, useEffect } from 'react';
 import { localDatabase } from '@/services/database';
 import { useToast } from '@/hooks/use-toast';
-import { Product, Category, ProductWithCategory } from '@/types/database';
+import { Product } from '@/types/database';
+import type { DatabaseProductWithCategory, DatabaseCategory } from '@/services/database/types';
+
+// Type mapping functions
+const mapDatabaseProductToUI = (dbProduct: DatabaseProductWithCategory) => ({
+  ...dbProduct,
+  category: dbProduct.category ? {
+    ...dbProduct.category,
+    created_at: dbProduct.category.created_at
+  } : undefined
+});
+
+const mapDatabaseCategoryToUI = (dbCategory: DatabaseCategory) => ({
+  ...dbCategory,
+  created_at: dbCategory.created_at
+});
 
 export function useLocalProducts() {
   const { toast } = useToast();
-  const [products, setProducts] = useState<ProductWithCategory[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,8 +34,8 @@ export function useLocalProducts() {
       const productsData = localDatabase.getProducts();
       const categoriesData = localDatabase.getCategories();
       
-      setProducts(productsData);
-      setCategories(categoriesData);
+      setProducts(productsData.map(mapDatabaseProductToUI));
+      setCategories(categoriesData.map(mapDatabaseCategoryToUI));
       setError(null);
     } catch (err) {
       setError('Erreur lors du chargement des données');

@@ -22,12 +22,13 @@ export class ProductsService extends BaseDatabaseService {
         category_id: row.category_id as string | null,
         stock: row.stock as number,
         image_url: row.image_url as string,
-        is_active: row.is_active as boolean,
-        created_at: row.created_at as string,
-        updated_at: row.updated_at as string,
+        is_active: Boolean(row.is_active),
+        created_at: row.created_at as string || new Date().toISOString(),
+        updated_at: row.updated_at as string || new Date().toISOString(),
         category: row.category_name ? { 
           id: row.category_id as string, 
-          name: row.category_name as string 
+          name: row.category_name as string,
+          created_at: new Date().toISOString()
         } : null
       });
     }
@@ -40,7 +41,7 @@ export class ProductsService extends BaseDatabaseService {
     const id = 'prod_' + Date.now();
     this.db.run(
       'INSERT INTO products (id, name, price, category_id, stock) VALUES (?, ?, ?, ?, ?)',
-      [id, product.name, product.price, product.category_id, product.stock]
+      [id, product.name, product.price, product.category_id || null, product.stock]
     );
     this.saveToLocalStorage();
   }
