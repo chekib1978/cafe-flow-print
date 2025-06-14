@@ -49,17 +49,17 @@ export interface SaleWithItems extends Sale {
 }
 
 export const CATEGORY_COLORS = {
-  'Boissons': 'from-blue-500 to-cyan-500',
-  'Snacks': 'from-orange-500 to-yellow-500',
-  'Sandwichs': 'from-green-500 to-emerald-500',
-  'Pâtisseries': 'from-pink-500 to-rose-500',
-  'Plats chauds': 'from-red-500 to-orange-600',
-  'Salades': 'from-lime-500 to-green-400',
-  'Desserts': 'from-purple-500 to-violet-500',
-  'Fruits': 'from-amber-500 to-orange-400',
-  'Soupes': 'from-teal-500 to-cyan-600',
-  'Pizzas': 'from-red-600 to-pink-500',
-  'default': 'from-gray-500 to-slate-600'
+  'Boissons': 'from-slate-100 to-slate-200 border-slate-300',
+  'Snacks': 'from-gray-100 to-gray-200 border-gray-300',
+  'Sandwichs': 'from-stone-100 to-stone-200 border-stone-300',
+  'Pâtisseries': 'from-neutral-100 to-neutral-200 border-neutral-300',
+  'Plats chauds': 'from-zinc-100 to-zinc-200 border-zinc-300',
+  'Salades': 'from-slate-100 to-slate-200 border-slate-300',
+  'Desserts': 'from-gray-100 to-gray-200 border-gray-300',
+  'Fruits': 'from-stone-100 to-stone-200 border-stone-300',
+  'Soupes': 'from-neutral-100 to-neutral-200 border-neutral-300',
+  'Pizzas': 'from-zinc-100 to-zinc-200 border-zinc-300',
+  'default': 'from-gray-100 to-gray-200 border-gray-300'
 };
 
 export const formatPrice = (price: number): string => {
