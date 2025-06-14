@@ -41,20 +41,23 @@ const getCategoryIcon = (categoryName: string) => {
 };
 
 export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuantity }: ProductCardProps) {
-  const categoryColor = product.category?.name 
+  const categoryColors = product.category?.name 
     ? CATEGORY_COLORS[product.category.name as keyof typeof CATEGORY_COLORS] || CATEGORY_COLORS.default
     : CATEGORY_COLORS.default;
 
   const CategoryIcon = getCategoryIcon(product.category?.name || '');
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 border border-gray-200 bg-white overflow-hidden">
+    <Card className={`group hover:shadow-lg transition-all duration-300 ${categoryColors.border} ${categoryColors.bg} overflow-hidden`}>
+      {/* Bande colorée en haut */}
+      <div className={`h-1 bg-gradient-to-r ${categoryColors.gradient}`} />
+      
       <CardContent className="p-6">
         <div className="space-y-4">
-          {/* En-tête minimaliste */}
+          {/* En-tête avec icône colorée */}
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-gray-50 border border-gray-200">
-              <CategoryIcon className="w-4 h-4 text-gray-600" />
+            <div className={`p-2 rounded-lg ${categoryColors.bg} ${categoryColors.border} border`}>
+              <CategoryIcon className={`w-4 h-4 ${categoryColors.icon}`} />
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">
@@ -62,7 +65,7 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
               </h3>
               <Badge 
                 variant="secondary" 
-                className="mt-1 text-xs bg-gray-100 text-gray-700 border-0"
+                className={`mt-1 text-xs ${categoryColors.bg} ${categoryColors.text} border-0`}
               >
                 {product.category?.name || 'Sans catégorie'}
               </Badge>
@@ -83,7 +86,7 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
             </div>
           </div>
           
-          {/* Actions épurées */}
+          {/* Actions avec couleurs de catégorie */}
           <div className="pt-2">
             {cartQuantity > 0 ? (
               <div className="flex items-center gap-3">
@@ -91,13 +94,13 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
                   size="sm"
                   variant="outline"
                   onClick={() => onRemoveFromCart(product.id)}
-                  className="h-8 w-8 p-0 rounded-full border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                  className={`h-8 w-8 p-0 rounded-full ${categoryColors.border} hover:${categoryColors.bg}`}
                 >
                   <Minus className="w-3 h-3" />
                 </Button>
                 
                 <div className="flex-1 text-center">
-                  <div className="bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
+                  <div className={`${categoryColors.bg} rounded-lg px-3 py-2 ${categoryColors.border} border`}>
                     <span className="font-semibold text-gray-900">{cartQuantity}</span>
                     <p className="text-xs text-gray-600 mt-0.5">
                       {formatPrice(product.price * cartQuantity)}
@@ -109,16 +112,16 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
                   size="sm"
                   onClick={() => onAddToCart(product)}
                   disabled={product.stock <= cartQuantity}
-                  className="h-8 w-8 p-0 rounded-full bg-gray-900 hover:bg-gray-800 disabled:opacity-50"
+                  className={`h-8 w-8 p-0 rounded-full bg-gradient-to-r ${categoryColors.gradient} hover:opacity-90 disabled:opacity-50 text-white`}
                 >
-                  <Plus className="w-3 h-3 text-white" />
+                  <Plus className="w-3 h-3" />
                 </Button>
               </div>
             ) : (
               <Button
                 onClick={() => onAddToCart(product)}
                 disabled={product.stock === 0}
-                className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium py-2.5 rounded-lg disabled:opacity-50"
+                className={`w-full bg-gradient-to-r ${categoryColors.gradient} hover:opacity-90 text-white font-medium py-2.5 rounded-lg disabled:opacity-50`}
               >
                 {product.stock === 0 ? 'Rupture de stock' : 'Ajouter au panier'}
               </Button>
