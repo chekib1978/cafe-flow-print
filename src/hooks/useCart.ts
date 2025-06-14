@@ -10,9 +10,6 @@ export function useCart() {
       const existingItem = currentItems.find(item => item.id === product.id);
       
       if (existingItem) {
-        if (existingItem.quantity >= product.stock) {
-          return currentItems; // Ne pas ajouter si stock insuffisant
-        }
         return currentItems.map(item =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }

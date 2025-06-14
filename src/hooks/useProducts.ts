@@ -41,10 +41,10 @@ export function useProducts() {
 
   // Create Product
   const createProductMutation = useMutation({
-    mutationFn: async (newProduct: { name: string; price: number; category_id: string | null; stock: number }) => {
+    mutationFn: async (newProduct: { name: string; price: number; category_id: string | null }) => {
       const { error } = await supabase
         .from('products')
-        .insert([newProduct]);
+        .insert([{ ...newProduct, stock: 0 }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -113,32 +113,6 @@ export function useProducts() {
     },
   });
 
-  // Mise à jour du stock (déjà existant)
-  const updateStockMutation = useMutation({
-    mutationFn: async ({ productId, newStock }: { productId: string; newStock: number }) => {
-      const { error } = await supabase
-        .from('products')
-        .update({ stock: newStock })
-        .eq('id', productId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour le stock",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const updateStock = (productId: string, newStock: number) => {
-    updateStockMutation.mutate({ productId, newStock });
-  };
-
   const updateProduct = (id: string, updates: Partial<Product>) => {
     updateProductMutation.mutate({ id, updates });
   };
@@ -147,7 +121,7 @@ export function useProducts() {
     deleteProductMutation.mutate(id);
   };
 
-  const createProduct = (newProduct: { name: string; price: number; category_id: string | null; stock: number }) => {
+  const createProduct = (newProduct: { name: string; price: number; category_id: string | null }) => {
     createProductMutation.mutate(newProduct);
   };
 
@@ -156,7 +130,6 @@ export function useProducts() {
     categories,
     isLoading,
     error,
-    updateStock,
     updateProduct,
     deleteProduct,
     createProduct,

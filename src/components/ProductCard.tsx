@@ -72,18 +72,11 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
             </div>
           </div>
 
-          {/* Prix et stock */}
-          <div className="flex justify-between items-center py-3 border-t border-gray-100">
-            <div>
-              <p className="text-lg font-bold text-gray-900">
-                {formatPrice(product.price)}
-              </p>
-              <p className="text-xs text-gray-500">
-                Stock: <span className={product.stock <= 5 ? 'text-red-600 font-medium' : 'text-gray-700'}>
-                  {product.stock}
-                </span>
-              </p>
-            </div>
+          {/* Prix */}
+          <div className="flex justify-center items-center py-3 border-t border-gray-100">
+            <p className="text-lg font-bold text-gray-900">
+              {formatPrice(product.price)}
+            </p>
           </div>
           
           {/* Actions avec couleurs de catégorie */}
@@ -111,8 +104,7 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
                 <Button
                   size="sm"
                   onClick={() => onAddToCart(product)}
-                  disabled={product.stock <= cartQuantity}
-                  className={`h-8 w-8 p-0 rounded-full bg-gradient-to-r ${categoryColors.gradient} hover:opacity-90 disabled:opacity-50 text-white`}
+                  className={`h-8 w-8 p-0 rounded-full bg-gradient-to-r ${categoryColors.gradient} hover:opacity-90 text-white`}
                 >
                   <Plus className="w-3 h-3" />
                 </Button>
@@ -120,10 +112,9 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
             ) : (
               <Button
                 onClick={() => onAddToCart(product)}
-                disabled={product.stock === 0}
-                className={`w-full bg-gradient-to-r ${categoryColors.gradient} hover:opacity-90 text-white font-medium py-2.5 rounded-lg disabled:opacity-50`}
+                className={`w-full bg-gradient-to-r ${categoryColors.gradient} hover:opacity-90 text-white font-medium py-2.5 rounded-lg`}
               >
-                {product.stock === 0 ? 'Rupture de stock' : 'Ajouter au panier'}
+                Ajouter au panier
               </Button>
             )}
           </div>

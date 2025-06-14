@@ -11,31 +11,28 @@ interface ProductCreateModalProps {
   open: boolean;
   onClose: () => void;
   categories: Category[];
-  onSave: (values: { name: string; price: number; category_id: string | null; stock: number }) => void;
+  onSave: (values: { name: string; price: number; category_id: string | null }) => void;
 }
 
 export function ProductCreateModal({ open, onClose, categories, onSave }: ProductCreateModalProps) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [categoryId, setCategoryId] = useState<string>("none");
-  const [stock, setStock] = useState(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || price < 0 || stock < 0) return;
+    if (!name.trim() || price < 0) return;
     
     onSave({
       name: name.trim(),
       price,
       category_id: categoryId === "none" ? null : categoryId,
-      stock
     });
 
     // Reset form
     setName("");
     setPrice(0);
     setCategoryId("none");
-    setStock(0);
   };
 
   const handleClose = () => {
@@ -43,7 +40,6 @@ export function ProductCreateModal({ open, onClose, categories, onSave }: Produc
     setName("");
     setPrice(0);
     setCategoryId("none");
-    setStock(0);
     onClose();
   };
 
@@ -104,21 +100,6 @@ export function ProductCreateModal({ open, onClose, categories, onSave }: Produc
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-            
-            <div>
-              <Label htmlFor="stock" className="text-sm font-medium">
-                Stock initial *
-              </Label>
-              <Input
-                id="stock"
-                type="number"
-                min="0"
-                value={stock}
-                onChange={(e) => setStock(Number(e.target.value))}
-                placeholder="0"
-                required
-              />
             </div>
           </div>
           

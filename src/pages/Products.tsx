@@ -66,7 +66,7 @@ const Products = () => {
           <div className="w-full max-w-4xl bg-white/70 rounded-xl p-6 shadow">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <span className="w-2 h-2 bg-blue-500 rounded-full" />
-              Articles en stock
+              Articles disponibles
             </h2>
             {isLoading ? (
               <div className="flex flex-col items-center justify-center p-12">
@@ -85,7 +85,6 @@ const Products = () => {
                       <th className="px-4 py-2 text-left">Nom</th>
                       <th className="px-4 py-2 text-left">Catégorie</th>
                       <th className="px-4 py-2 text-right">Prix</th>
-                      <th className="px-4 py-2 text-right">Stock</th>
                       <th className="px-4 py-2 text-center">Actions</th>
                     </tr>
                   </thead>
@@ -99,16 +98,11 @@ const Products = () => {
                         <tr key={prod.id} className="border-b hover:bg-gray-50 transition">
                           <td className="px-4 py-2 font-medium">{prod.name}</td>
                           <td className="px-4 py-2">
-                            <Badge className={`bg-gradient-to-r ${catColor} text-white px-3 py-1`} variant="secondary">
+                            <Badge className={`bg-gradient-to-r ${catColor.gradient} text-white px-3 py-1`} variant="secondary">
                               {prod.category?.name || "Sans catégorie"}
                             </Badge>
                           </td>
                           <td className="px-4 py-2 text-right">{formatPrice(prod.price)}</td>
-                          <td className="px-4 py-2 text-right font-semibold">
-                            <span className={prod.stock <= 5 ? "text-red-500" : "text-green-700"}>
-                              {prod.stock}
-                            </span>
-                          </td>
                           <td className="px-4 py-2 text-center">
                             <Button variant="outline" size="sm" className="mr-2" onClick={() => handleEdit(prod)}>
                               <Edit className="w-4 h-4" />

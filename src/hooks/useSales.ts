@@ -63,17 +63,6 @@ export function useSales() {
 
       if (itemsError) throw itemsError;
 
-      // Mettre à jour le stock des produits
-      for (const item of cartItems) {
-        const newStock = item.stock - item.quantity;
-        const { error: stockError } = await supabase
-          .from('products')
-          .update({ stock: newStock })
-          .eq('id', item.id);
-
-        if (stockError) throw stockError;
-      }
-
       return { ...sale, sale_items: insertedSaleItems || [] };
     },
     onSuccess: (newSale) => {
