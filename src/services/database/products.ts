@@ -49,7 +49,12 @@ export class ProductsService extends BaseDatabaseService {
   updateProduct(id: string, updates: any): void {
     if (!this.db) return;
     const fields = Object.keys(updates);
-    const values = Object.values(updates);
+    const values = Object.values(updates).map(value => {
+      // Convert values to proper SQL types
+      if (value === null || value === undefined) return null;
+      if (typeof value === 'boolean') return value ? 1 : 0;
+      return value;
+    });
     const setClause = fields.map(field => `${field} = ?`).join(', ');
     
     this.db.run(
