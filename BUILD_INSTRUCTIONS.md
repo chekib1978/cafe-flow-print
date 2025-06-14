@@ -11,6 +11,9 @@ Ce projet utilise GitHub Actions pour automatiser le processus de build et de d�
 
 1. **cafeteria-app-build** : Build standard pour déploiement web
 2. **cafeteria-app-portable** : Version portable pour clé USB avec scripts de lancement
+3. **cafeteria-app-desktop-windows** : Application desktop Windows (.exe)
+4. **cafeteria-app-desktop-macos** : Application desktop macOS (.dmg)
+5. **cafeteria-app-desktop-linux** : Application desktop Linux (.AppImage)
 
 ### Comment Télécharger les Builds
 
@@ -18,6 +21,21 @@ Ce projet utilise GitHub Actions pour automatiser le processus de build et de d�
 2. Cliquez sur le workflow le plus récent
 3. Descendez jusqu'à la section **Artifacts**
 4. Téléchargez l'artifact souhaité
+
+### Applications Desktop
+
+Les applications desktop sont créées automatiquement pour :
+- **Windows** : Installateur `.exe` 
+- **macOS** : Package `.dmg`
+- **Linux** : Application portable `.AppImage`
+
+#### Fonctionnalités Desktop
+- ✅ **100% hors ligne** (base de données SQLite intégrée)
+- ✅ **Installation native** sur chaque plateforme
+- ✅ **Menus natifs** et raccourcis clavier
+- ✅ **Zoom** (Ctrl/Cmd + Plus/Moins)
+- ✅ **Sécurité renforcée** avec Electron
+- ✅ **Auto-updater** (optionnel)
 
 ### Version Portable
 
@@ -40,18 +58,31 @@ Pour créer un build localement :
 # Installer les dépendances
 npm install
 
-# Créer le build
+# Build web
 npm run build
 
-# Les fichiers seront dans le dossier 'dist'
+# Build desktop (toutes plateformes)
+npm run electron-pack
+
+# Build desktop (plateforme spécifique)
+npm run electron-pack-win    # Windows uniquement
+npm run electron-pack-mac    # macOS uniquement  
+npm run electron-pack-linux  # Linux uniquement
+
+# Développement desktop
+npm run electron-dev
 ```
 
-### Utilisation de la Version Portable
+### Utilisation des Applications
 
-1. **Méthode Simple** : Ouvrez `index.html` dans un navigateur
-2. **Avec Serveur Local** : 
-   - Windows : Double-cliquez sur `run.bat`
-   - Linux/Mac : Exécutez `./run.sh` dans un terminal
+#### Version Web
+1. **GitHub Pages** : Accès direct via l'URL
+2. **Portable** : Ouvrez `index.html` ou utilisez les scripts `run.bat`/`run.sh`
+
+#### Version Desktop
+1. **Windows** : Double-cliquez sur le fichier `.exe` téléchargé
+2. **macOS** : Ouvrez le fichier `.dmg` et glissez l'app dans Applications
+3. **Linux** : Rendez le fichier `.AppImage` exécutable et lancez-le
 
 ## Configuration GitHub Pages
 

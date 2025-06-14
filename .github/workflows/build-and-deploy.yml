@@ -75,6 +75,62 @@ jobs:
         path: portable-app/
         retention-days: 30
 
+  build-desktop:
+    needs: build
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build Electron app (Windows)
+      if: matrix.os == 'windows-latest'
+      run: npm run electron-pack-win
+      
+    - name: Build Electron app (macOS)
+      if: matrix.os == 'macos-latest'
+      run: npm run electron-pack-mac
+      
+    - name: Build Electron app (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: npm run electron-pack-linux
+      
+    - name: Upload Windows build
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: cafeteria-app-desktop-windows
+        path: dist/cafeteria-app Setup *.exe
+        retention-days: 30
+        
+    - name: Upload macOS build
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: cafeteria-app-desktop-macos
+        path: dist/cafeteria-app-*.dmg
+        retention-days: 30
+        
+    - name: Upload Linux build
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: cafeteria-app-desktop-linux
+        path: dist/cafeteria-app-*.AppImage
+        retention-days: 30
+
   deploy-pages:
     needs: build
     runs-on: ubuntu-latest
@@ -109,7 +165,7 @@ jobs:
       uses: actions/configure-pages@v4
       
     - name: Upload to Pages
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v4
       with:
         path: dist/
         
