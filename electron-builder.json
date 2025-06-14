@@ -1,0 +1,36 @@
+
+{
+  "appId": "com.cafeteria.app",
+  "productName": "Application Cafétéria",
+  "directories": {
+    "output": "dist-electron"
+  },
+  "files": [
+    "dist/**/*",
+    "electron/main.js",
+    "node_modules/**/*"
+  ],
+  "extraResources": [
+    {
+      "from": "public/favicon.ico",
+      "to": "favicon.ico"
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "public/favicon.ico",
+    "artifactName": "cafeteria-app-setup-${version}.${ext}"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Application Cafétéria"
+  }
+}
