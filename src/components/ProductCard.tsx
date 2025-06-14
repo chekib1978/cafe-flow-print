@@ -36,7 +36,7 @@ const getCategoryIcon = (categoryName: string) => {
   } else if (name.includes('fruit') || name.includes('pomme') || name.includes('banane')) {
     return Apple;
   } else {
-    return Utensils; // Icône par défaut pour les autres catégories
+    return Utensils;
   }
 };
 
@@ -48,19 +48,19 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
   const CategoryIcon = getCategoryIcon(product.category?.name || '');
 
   return (
-    <Card className={`group hover:shadow-lg transition-all duration-300 ${categoryColors.border} ${categoryColors.bg} overflow-hidden`}>
+    <Card className={`group hover:shadow-lg transition-all duration-300 ${categoryColors.border} ${categoryColors.bg} overflow-hidden w-full`}>
       {/* Bande colorée en haut */}
       <div className={`h-1 bg-gradient-to-r ${categoryColors.gradient}`} />
       
-      <CardContent className="p-6">
-        <div className="space-y-4">
-          {/* En-tête avec icône colorée */}
-          <div className="flex items-start gap-3">
-            <div className={`p-2 rounded-lg ${categoryColors.bg} ${categoryColors.border} border`}>
-              <CategoryIcon className={`w-4 h-4 ${categoryColors.icon}`} />
+      <CardContent className="p-4 sm:p-6">
+        <div className="space-y-3 sm:space-y-4">
+          {/* En-tête avec icône colorée - Mobile optimized */}
+          <div className="flex items-start gap-2 sm:gap-3">
+            <div className={`p-1.5 sm:p-2 rounded-lg ${categoryColors.bg} ${categoryColors.border} border flex-shrink-0`}>
+              <CategoryIcon className={`w-3 h-3 sm:w-4 sm:h-4 ${categoryColors.icon}`} />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">
+              <h3 className="font-semibold text-gray-900 text-xs sm:text-sm leading-tight">
                 {product.name}
               </h3>
               <Badge 
@@ -72,29 +72,29 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
             </div>
           </div>
 
-          {/* Prix */}
-          <div className="flex justify-center items-center py-3 border-t border-gray-100">
-            <p className="text-lg font-bold text-gray-900">
+          {/* Prix - Mobile optimized */}
+          <div className="flex justify-center items-center py-2 sm:py-3 border-t border-gray-100">
+            <p className="text-base sm:text-lg font-bold text-gray-900">
               {formatPrice(product.price)}
             </p>
           </div>
           
-          {/* Actions avec couleurs de catégorie */}
-          <div className="pt-2">
+          {/* Actions avec couleurs de catégorie - Mobile optimized */}
+          <div className="pt-1 sm:pt-2">
             {cartQuantity > 0 ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => onRemoveFromCart(product.id)}
-                  className={`h-8 w-8 p-0 rounded-full ${categoryColors.border} hover:${categoryColors.bg}`}
+                  className={`h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-full ${categoryColors.border} hover:${categoryColors.bg} touch-manipulation`}
                 >
-                  <Minus className="w-3 h-3" />
+                  <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
                 
                 <div className="flex-1 text-center">
-                  <div className={`${categoryColors.bg} rounded-lg px-3 py-2 ${categoryColors.border} border`}>
-                    <span className="font-semibold text-gray-900">{cartQuantity}</span>
+                  <div className={`${categoryColors.bg} rounded-lg px-2 py-1.5 sm:px-3 sm:py-2 ${categoryColors.border} border`}>
+                    <span className="font-semibold text-gray-900 text-sm sm:text-base">{cartQuantity}</span>
                     <p className="text-xs text-gray-600 mt-0.5">
                       {formatPrice(product.price * cartQuantity)}
                     </p>
@@ -104,17 +104,18 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
                 <Button
                   size="sm"
                   onClick={() => onAddToCart(product)}
-                  className={`h-8 w-8 p-0 rounded-full bg-gradient-to-r ${categoryColors.gradient} hover:opacity-90 text-white`}
+                  className={`h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-full bg-gradient-to-r ${categoryColors.gradient} hover:opacity-90 text-white touch-manipulation`}
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
               </div>
             ) : (
               <Button
                 onClick={() => onAddToCart(product)}
-                className={`w-full bg-gradient-to-r ${categoryColors.gradient} hover:opacity-90 text-white font-medium py-2.5 rounded-lg`}
+                className={`w-full bg-gradient-to-r ${categoryColors.gradient} hover:opacity-90 text-white font-medium py-2 sm:py-2.5 rounded-lg text-sm sm:text-base touch-manipulation min-h-[44px]`}
               >
-                Ajouter au panier
+                <span className="hidden sm:inline">Ajouter au panier</span>
+                <span className="sm:hidden">Ajouter</span>
               </Button>
             )}
           </div>

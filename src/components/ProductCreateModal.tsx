@@ -45,10 +45,10 @@ export function ProductCreateModal({ open, onClose, categories, onSave }: Produc
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md mx-4 sm:mx-auto">
         <DialogHeader>
-          <DialogTitle>Ajouter un nouvel article</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">Ajouter un nouvel article</DialogTitle>
+          <DialogDescription className="text-sm sm:text-base">
             Créez un nouveau produit en remplissant les informations ci-dessous.
           </DialogDescription>
         </DialogHeader>
@@ -64,6 +64,7 @@ export function ProductCreateModal({ open, onClose, categories, onSave }: Produc
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ex: Café au lait"
                 required
+                className="mt-1 touch-manipulation min-h-[44px]"
               />
             </div>
             
@@ -80,6 +81,7 @@ export function ProductCreateModal({ open, onClose, categories, onSave }: Produc
                 onChange={(e) => setPrice(Number(e.target.value))}
                 placeholder="0.000"
                 required
+                className="mt-1 touch-manipulation min-h-[44px]"
               />
             </div>
             
@@ -88,7 +90,7 @@ export function ProductCreateModal({ open, onClose, categories, onSave }: Produc
                 Catégorie
               </Label>
               <Select value={categoryId} onValueChange={setCategoryId}>
-                <SelectTrigger>
+                <SelectTrigger className="mt-1 touch-manipulation min-h-[44px]">
                   <SelectValue placeholder="Sélectionner une catégorie" />
                 </SelectTrigger>
                 <SelectContent>
@@ -103,13 +105,13 @@ export function ProductCreateModal({ open, onClose, categories, onSave }: Produc
             </div>
           </div>
           
-          <DialogFooter className="mt-6 flex flex-row justify-between gap-2">
-            <Button type="button" variant="outline" onClick={handleClose}>
+          <DialogFooter className="mt-6 flex flex-col-reverse sm:flex-row gap-2">
+            <Button type="button" variant="outline" onClick={handleClose} className="touch-manipulation min-h-[44px]">
               Annuler
             </Button>
             <Button 
               type="submit" 
-              className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white"
+              className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white touch-manipulation min-h-[44px]"
             >
               Créer l'article
             </Button>
