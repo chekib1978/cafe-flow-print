@@ -210,33 +210,22 @@ class LocalDatabase {
   // Méthodes pour les ventes
   getSales(): any[] {
     if (!this.db) return [];
-    const stmt = this.db.prepare(`
-      SELECT s.*, 
-        GROUP_CONCAT(
-          json_object(
-            'id', si.id,
-            'product_id', si.product_id,
-            'product_name', si.product_name,
-            'quantity', si.quantity,
-            'unit_price', si.unit_price,
-            'total_price', si.total_price
-          )
-        ) as sale_items_json
-      FROM sales s
-      LEFT JOIN sale_items si ON s.id = si.sale_id
-      GROUP BY s.id
-      ORDER BY s.created_at DESC
-    `);
-    
+    const stmt = this.db.prepare('SELECT * FROM sales ORDER BY created_at DESC');
     const sales = [];
     while (stmt.step()) {
-      const row = stmt.getAsObject();
-      const sale_items = row.sale_items_json ? 
-        row.sale_items_json.split(',').map((item: string) => JSON.parse(item)) : [];
+      const sale = stmt.getAsObject();
+      // Récupérer les items pour cette vente
+      const itemsStmt = this.db.prepare('SELECT * FROM sale_items WHERE sale_id = ?');
+      itemsStmt.bind([sale.id]);
+      const saleItems = [];
+      while (itemsStmt.step()) {
+        saleItems.push(itemsStmt.getAsObject());
+      }
+      itemsStmt.free();
       
       sales.push({
-        ...row,
-        sale_items
+        ...sale,
+        sale_items: saleItems
       });
     }
     stmt.free();
@@ -258,7 +247,7 @@ class LocalDatabase {
     );
 
     // Créer les articles de la vente
-    const saleItems = [];
+    const saleItems: any[] = [];
     cartItems.forEach(item => {
       const itemId = 'item_' + Date.now() + '_' + Math.random();
       this.db!.run(
