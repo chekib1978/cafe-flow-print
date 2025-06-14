@@ -22,45 +22,96 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
+    // Format optimisé pour imprimantes Epson TM (80mm)
     printWindow.document.write(`
       <html>
         <head>
-          <title>Ticket de Caisse - ${sale?.ticket_number}</title>
+          <title>Ticket - ${sale?.ticket_number}</title>
           <style>
-            body { 
-              font-family: 'Courier New', monospace; 
-              font-size: 12px; 
-              line-height: 1.6;
-              margin: 0;
-              padding: 15px;
-              max-width: 300px;
-              background: white;
+            @media print {
+              @page {
+                size: 80mm auto;
+                margin: 0;
+              }
             }
-            .center { text-align: center; }
-            .bold { font-weight: bold; }
+            
+            body { 
+              font-family: 'Courier New', 'Lucida Console', monospace; 
+              font-size: 11px; 
+              line-height: 1.3;
+              margin: 0;
+              padding: 2mm;
+              width: 76mm;
+              background: white;
+              color: black;
+            }
+            
+            .center { 
+              text-align: center; 
+              margin: 2px 0;
+            }
+            
+            .left { 
+              text-align: left; 
+            }
+            
+            .right { 
+              text-align: right; 
+            }
+            
+            .bold { 
+              font-weight: bold; 
+            }
+            
+            .large { 
+              font-size: 14px; 
+              font-weight: bold;
+            }
+            
             .receipt-line { 
               display: flex; 
               justify-content: space-between; 
-              margin: 3px 0;
-              align-items: center;
+              margin: 1px 0;
+              font-size: 11px;
             }
+            
+            .item-line {
+              margin: 1px 0;
+              font-size: 10px;
+            }
+            
             .separator { 
-              border-top: 1px dashed #333; 
-              margin: 12px 0; 
+              border-top: 1px dashed #000; 
+              margin: 3mm 0; 
+              height: 0;
             }
-            .total { 
-              font-size: 16px; 
+            
+            .double-separator {
+              border-top: 2px solid #000;
+              margin: 3mm 0;
+              height: 0;
+            }
+            
+            .total-section { 
+              font-size: 12px; 
               font-weight: bold; 
-              background: #f0f0f0;
-              padding: 8px;
-              border-radius: 4px;
+              margin: 2mm 0;
             }
-            .header {
-              background: linear-gradient(135deg, #059669, #2563eb);
-              color: white;
-              padding: 15px;
-              border-radius: 8px;
-              margin-bottom: 15px;
+            
+            .store-info {
+              font-size: 10px;
+              margin: 1px 0;
+            }
+            
+            .thank-you {
+              font-size: 10px;
+              margin: 2mm 0 1mm 0;
+            }
+            
+            /* Suppression des marges pour l'impression */
+            * {
+              -webkit-print-color-adjust: exact !important;
+              color-adjust: exact !important;
             }
           </style>
         </head>
@@ -72,10 +123,12 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
 
     printWindow.document.close();
     printWindow.focus();
+    
+    // Délai pour laisser le CSS se charger
     setTimeout(() => {
       printWindow.print();
       printWindow.close();
-    }, 250);
+    }, 500);
   };
 
   if (!sale) return null;
@@ -98,74 +151,73 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
         </DialogHeader>
         
         <div className="space-y-6">
-          <div ref={receiptRef} className="bg-white p-6 font-mono text-sm border rounded-xl shadow-lg">
-            <div className="header center">
-              <div className="bold text-xl mb-2">🏪 CAFÉTÉRIA PRO</div>
-              <div className="text-sm opacity-90">Système de Point de Vente</div>
-            </div>
+          <div ref={receiptRef} className="bg-white p-4 font-mono text-sm border rounded-xl shadow-lg">
+            {/* En-tête du magasin */}
+            <div className="center large">CAFETERIA PRO</div>
+            <div className="center store-info">123 Avenue Habib Bourguiba</div>
+            <div className="center store-info">1000 Tunis, Tunisie</div>
+            <div className="center store-info">Tel: +216 71 123 456</div>
+            <div className="center store-info">Email: contact@cafeteria-pro.tn</div>
             
-            <div className="center mb-4 text-gray-600">
-              <div>123 Avenue Habib Bourguiba</div>
-              <div>1000 Tunis, Tunisie</div>
-              <div>Tél: +216 71 123 456</div>
-              <div>Email: contact@cafeteria-pro.tn</div>
+            <div className="separator"></div>
+            
+            {/* Informations du ticket */}
+            <div className="receipt-line">
+              <span>Ticket:</span>
+              <span className="bold">{sale.ticket_number}</span>
+            </div>
+            <div className="receipt-line">
+              <span>Date:</span>
+              <span>{saleDate.toLocaleDateString('fr-FR')}</span>
+            </div>
+            <div className="receipt-line">
+              <span>Heure:</span>
+              <span>{saleDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
             
             <div className="separator"></div>
             
-            <div className="space-y-2 mb-4">
-              <div className="receipt-line bold">
-                <span>Ticket N°:</span>
-                <span>{sale.ticket_number}</span>
-              </div>
-              <div className="receipt-line">
-                <span>Date:</span>
-                <span>{saleDate.toLocaleDateString('fr-FR')}</span>
-              </div>
-              <div className="receipt-line">
-                <span>Heure:</span>
-                <span>{saleDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
-              </div>
-              <div className="receipt-line">
-                <span>Articles:</span>
-                <span>{sale.items_count}</span>
-              </div>
-            </div>
-            
-            <div className="separator"></div>
-            
-            <div className="space-y-3 mb-4">
-              {sale.sale_items.map((item, index) => (
-                <div key={index} className="space-y-1">
-                  <div className="receipt-line bold">
-                    <span>{item.product_name}</span>
-                  </div>
-                  <div className="receipt-line text-gray-600">
-                    <span>{item.quantity} × {formatPrice(item.unit_price)}</span>
-                    <span className="bold">{formatPrice(item.total_price)}</span>
-                  </div>
+            {/* Articles */}
+            {sale.sale_items.map((item, index) => (
+              <div key={index}>
+                <div className="item-line bold">{item.product_name}</div>
+                <div className="receipt-line">
+                  <span>{item.quantity} x {formatPrice(item.unit_price)}</span>
+                  <span className="bold">{formatPrice(item.total_price)}</span>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
             
             <div className="separator"></div>
             
-            <div className="total center">
-              <div className="receipt-line text-lg">
-                <span>TOTAL À PAYER:</span>
-                <span>{formatPrice(sale.total)}</span>
-              </div>
+            {/* Résumé */}
+            <div className="receipt-line">
+              <span>Nb articles:</span>
+              <span>{sale.items_count}</span>
             </div>
+            
+            <div className="double-separator"></div>
+            
+            {/* Total */}
+            <div className="receipt-line total-section">
+              <span>TOTAL:</span>
+              <span>{formatPrice(sale.total)}</span>
+            </div>
+            
+            <div className="double-separator"></div>
+            
+            {/* Pied de page */}
+            <div className="center thank-you bold">MERCI DE VOTRE VISITE</div>
+            <div className="center thank-you">A bientot chez Cafeteria Pro</div>
             
             <div className="separator"></div>
             
-            <div className="center mt-4 text-gray-600">
-              <div className="bold">✨ Merci de votre visite! ✨</div>
-              <div>À très bientôt chez Cafétéria Pro</div>
-              <div className="mt-2 text-xs">
-                Ticket généré le {new Date().toLocaleString('fr-FR')}
-              </div>
+            <div className="center store-info">
+              Imprime le {new Date().toLocaleString('fr-FR')}
             </div>
+            
+            {/* Espace pour la coupe du papier */}
+            <div style={{ height: '10mm' }}></div>
           </div>
           
           <div className="flex gap-3">
@@ -174,7 +226,7 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
               className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Printer className="w-4 h-4 mr-2" />
-              Imprimer
+              Imprimer Ticket
             </Button>
             <Button 
               variant="outline" 
