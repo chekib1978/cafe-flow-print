@@ -49,12 +49,17 @@ export interface SaleWithItems extends Sale {
 }
 
 export const CATEGORY_COLORS = {
-  'Boissons': 'from-blue-500 to-blue-600',
-  'Snacks': 'from-orange-500 to-orange-600',
-  'Sandwichs': 'from-green-500 to-green-600',
-  'Pâtisseries': 'from-pink-500 to-pink-600',
-  'Plats chauds': 'from-red-500 to-red-600',
-  'default': 'from-gray-500 to-gray-600'
+  'Boissons': 'from-blue-500 to-cyan-500',
+  'Snacks': 'from-orange-500 to-yellow-500',
+  'Sandwichs': 'from-green-500 to-emerald-500',
+  'Pâtisseries': 'from-pink-500 to-rose-500',
+  'Plats chauds': 'from-red-500 to-orange-600',
+  'Salades': 'from-lime-500 to-green-400',
+  'Desserts': 'from-purple-500 to-violet-500',
+  'Fruits': 'from-amber-500 to-orange-400',
+  'Soupes': 'from-teal-500 to-cyan-600',
+  'Pizzas': 'from-red-600 to-pink-500',
+  'default': 'from-gray-500 to-slate-600'
 };
 
 export const formatPrice = (price: number): string => {
