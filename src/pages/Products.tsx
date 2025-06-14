@@ -1,7 +1,8 @@
+
 import { Package, Loader2, Plus } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { useLocalProducts } from "@/hooks/useLocalProducts";
+import { useProducts } from "@/hooks/useProducts";
 import { Badge } from "@/components/ui/badge";
 import { CATEGORY_COLORS, formatPrice } from "@/types/database";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ import { ProductEditModal } from "@/components/ProductEditModal";
 import { ProductCreateModal } from "@/components/ProductCreateModal";
 
 const Products = () => {
-  const { products, categories, isLoading, error, updateProduct, deleteProduct, createProduct } = useLocalProducts();
+  const { products, categories, isLoading, error, updateProduct, deleteProduct, createProduct } = useProducts();
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -49,10 +50,10 @@ const Products = () => {
           <div className="bg-white/80 border rounded-2xl p-8 shadow-lg flex flex-col items-center w-full max-w-4xl mb-8">
             <Package className="w-12 h-12 text-blue-600 mb-4" />
             <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
-              Gestion des articles (Local)
+              Gestion des articles
             </h1>
             <p className="text-gray-600 mb-4 text-center max-w-md">
-              Application fonctionnant entièrement en local avec base de données SQLite intégrée.
+              Gérez votre inventaire de produits avec Supabase.
             </p>
             <Button 
               onClick={() => setCreateModalOpen(true)}
@@ -65,7 +66,7 @@ const Products = () => {
           <div className="w-full max-w-4xl bg-white/70 rounded-xl p-6 shadow">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <span className="w-2 h-2 bg-blue-500 rounded-full" />
-              Articles réels en stock
+              Articles en stock
             </h2>
             {isLoading ? (
               <div className="flex flex-col items-center justify-center p-12">
