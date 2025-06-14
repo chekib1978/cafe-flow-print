@@ -47,19 +47,10 @@ jobs:
         echo "start http://localhost:8080" >> portable-app/run.bat
         echo "npx serve . -p 8080 || python -m http.server 8080 --bind 127.0.0.1" >> portable-app/run.bat
         echo "pause" >> portable-app/run.bat
-        echo "#!/bin/bash" > portable-app/run.sh
-        echo "cd \"\$(dirname \"\$0\")\"" >> portable-app/run.sh
-        echo "echo \"Démarrage du serveur local...\"" >> portable-app/run.sh
-        echo "echo \"Ouvrez votre navigateur et allez à: http://localhost:8080\"" >> portable-app/run.sh
-        echo "echo \"Appuyez sur Ctrl+C pour arrêter le serveur\"" >> portable-app/run.sh
-        echo "npx serve . -p 8080 &" >> portable-app/run.sh
-        echo "sleep 2" >> portable-app/run.sh
-        echo "xdg-open http://localhost:8080 2>/dev/null || open http://localhost:8080" >> portable-app/run.sh
-        chmod +x portable-app/run.sh
         echo "# Application Cafétéria Portable" > portable-app/README.txt
         echo "" >> portable-app/README.txt
         echo "Pour utiliser cette application :" >> portable-app/README.txt
-        echo "1. Double-cliquez sur run.bat (Windows) ou run.sh (Linux/Mac)" >> portable-app/README.txt
+        echo "1. Double-cliquez sur run.bat (Windows)" >> portable-app/README.txt
         echo "2. Si le navigateur ne s'ouvre pas automatiquement," >> portable-app/README.txt
         echo "   ouvrez manuellement: http://localhost:8080" >> portable-app/README.txt
         echo "3. Pour arrêter: fermez la fenêtre de commande" >> portable-app/README.txt
@@ -75,12 +66,9 @@ jobs:
         path: portable-app/
         retention-days: 30
 
-  build-desktop:
+  build-desktop-windows:
     needs: build
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
     
     steps:
     - name: Checkout code
@@ -95,40 +83,22 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
-    - name: Build Electron app (Windows)
-      if: matrix.os == 'windows-latest'
+    - name: Install Electron dependencies
+      run: npm install electron electron-builder --save-dev
+      
+    - name: Build web application first
+      run: npm run build
+      
+    - name: Build Windows Electron app
       run: npm run electron-pack-win
-      
-    - name: Build Electron app (macOS)
-      if: matrix.os == 'macos-latest'
-      run: npm run electron-pack-mac
-      
-    - name: Build Electron app (Linux)
-      if: matrix.os == 'ubuntu-latest'
-      run: npm run electron-pack-linux
-      
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Upload Windows build
-      if: matrix.os == 'windows-latest'
       uses: actions/upload-artifact@v4
       with:
         name: cafeteria-app-desktop-windows
-        path: dist/cafeteria-app Setup *.exe
-        retention-days: 30
-        
-    - name: Upload macOS build
-      if: matrix.os == 'macos-latest'
-      uses: actions/upload-artifact@v4
-      with:
-        name: cafeteria-app-desktop-macos
-        path: dist/cafeteria-app-*.dmg
-        retention-days: 30
-        
-    - name: Upload Linux build
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v4
-      with:
-        name: cafeteria-app-desktop-linux
-        path: dist/cafeteria-app-*.AppImage
+        path: dist/*.exe
         retention-days: 30
 
   deploy-pages:
