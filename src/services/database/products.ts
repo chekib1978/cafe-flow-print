@@ -53,7 +53,10 @@ export class ProductsService extends BaseDatabaseService {
       // Convert values to proper SQL types
       if (value === null || value === undefined) return null;
       if (typeof value === 'boolean') return value ? 1 : 0;
-      return value;
+      if (typeof value === 'string') return value;
+      if (typeof value === 'number') return value;
+      // Convert any other type to string as fallback
+      return String(value);
     });
     const setClause = fields.map(field => `${field} = ?`).join(', ');
     
