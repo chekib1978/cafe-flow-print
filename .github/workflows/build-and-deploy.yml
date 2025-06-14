@@ -1,0 +1,106 @@
+
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build application
+      run: npm run build
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: cafeteria-app-build
+        path: dist/
+        retention-days: 30
+        
+    - name: Create portable package
+      run: |
+        mkdir -p portable-app
+        cp -r dist/* portable-app/
+        echo "@echo off" > portable-app/run.bat
+        echo "cd /d \"%~dp0\"" >> portable-app/run.bat
+        echo "python -m http.server 8080" >> portable-app/run.bat
+        echo "start http://localhost:8080" >> portable-app/run.bat
+        echo "#!/bin/bash" > portable-app/run.sh
+        echo "cd \"\$(dirname \"\$0\")\"" >> portable-app/run.sh
+        echo "python3 -m http.server 8080 &" >> portable-app/run.sh
+        echo "sleep 2" >> portable-app/run.sh
+        echo "xdg-open http://localhost:8080 2>/dev/null || open http://localhost:8080" >> portable-app/run.sh
+        chmod +x portable-app/run.sh
+        echo "# Application Cafétéria Portable" > portable-app/README.txt
+        echo "" >> portable-app/README.txt
+        echo "Pour utiliser cette application :" >> portable-app/README.txt
+        echo "1. Ouvrez le fichier index.html dans votre navigateur" >> portable-app/README.txt
+        echo "2. Ou exécutez run.bat (Windows) ou run.sh (Linux/Mac)" >> portable-app/README.txt
+        echo "" >> portable-app/README.txt
+        echo "L'application fonctionne entièrement hors ligne !" >> portable-app/README.txt
+        
+    - name: Upload portable package
+      uses: actions/upload-artifact@v4
+      with:
+        name: cafeteria-app-portable
+        path: portable-app/
+        retention-days: 30
+
+  deploy-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build
+      run: npm run build
+      
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: Upload to Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: dist/
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

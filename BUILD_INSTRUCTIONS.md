@@ -1,0 +1,61 @@
+
+# Instructions de Build et Déploiement
+
+## Build Automatique avec GitHub Actions
+
+Ce projet utilise GitHub Actions pour automatiser le processus de build et de déploiement.
+
+### Artifacts Disponibles
+
+À chaque push sur la branche principale, GitHub Actions génère automatiquement :
+
+1. **cafeteria-app-build** : Build standard pour déploiement web
+2. **cafeteria-app-portable** : Version portable pour clé USB avec scripts de lancement
+
+### Comment Télécharger les Builds
+
+1. Allez dans l'onglet **Actions** de votre repository GitHub
+2. Cliquez sur le workflow le plus récent
+3. Descendez jusqu'à la section **Artifacts**
+4. Téléchargez l'artifact souhaité
+
+### Version Portable
+
+L'artifact `cafeteria-app-portable` contient :
+- Tous les fichiers de l'application
+- `run.bat` pour Windows
+- `run.sh` pour Linux/Mac  
+- `README.txt` avec les instructions
+
+### Déploiement GitHub Pages
+
+L'application est automatiquement déployée sur GitHub Pages à l'adresse :
+`https://[votre-username].github.io/[nom-du-repo]`
+
+### Build Local
+
+Pour créer un build localement :
+
+```bash
+# Installer les dépendances
+npm install
+
+# Créer le build
+npm run build
+
+# Les fichiers seront dans le dossier 'dist'
+```
+
+### Utilisation de la Version Portable
+
+1. **Méthode Simple** : Ouvrez `index.html` dans un navigateur
+2. **Avec Serveur Local** : 
+   - Windows : Double-cliquez sur `run.bat`
+   - Linux/Mac : Exécutez `./run.sh` dans un terminal
+
+## Configuration GitHub Pages
+
+Pour activer GitHub Pages :
+1. Allez dans Settings > Pages
+2. Sélectionnez "GitHub Actions" comme source
+3. L'URL sera disponible après le premier déploiement
