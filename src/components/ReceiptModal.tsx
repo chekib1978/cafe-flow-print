@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { X, Printer, Download, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ interface ReceiptModalProps {
 export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
   const receiptRef = useRef<HTMLDivElement>(null);
 
+  // S'assurer que handlePrint N'EST appelé que sur le bouton Imprimer
   const handlePrint = () => {
     const printContent = receiptRef.current;
     if (!printContent) return;
@@ -221,6 +221,7 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
           </div>
           
           <div className="flex gap-3">
+            {/* Impression seulement au clic */}
             <Button 
               onClick={handlePrint} 
               className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
