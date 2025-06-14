@@ -45,14 +45,14 @@ jobs:
         echo "echo Appuyez sur Ctrl+C pour arreter le serveur" >> portable-app/run.bat
         echo "echo." >> portable-app/run.bat
         echo "start http://localhost:8080" >> portable-app/run.bat
-        echo "python -m http.server 8080" >> portable-app/run.bat
+        echo "npx serve . -p 8080 || python -m http.server 8080 --bind 127.0.0.1" >> portable-app/run.bat
         echo "pause" >> portable-app/run.bat
         echo "#!/bin/bash" > portable-app/run.sh
         echo "cd \"\$(dirname \"\$0\")\"" >> portable-app/run.sh
         echo "echo \"Démarrage du serveur local...\"" >> portable-app/run.sh
         echo "echo \"Ouvrez votre navigateur et allez à: http://localhost:8080\"" >> portable-app/run.sh
         echo "echo \"Appuyez sur Ctrl+C pour arrêter le serveur\"" >> portable-app/run.sh
-        echo "python3 -m http.server 8080 &" >> portable-app/run.sh
+        echo "npx serve . -p 8080 &" >> portable-app/run.sh
         echo "sleep 2" >> portable-app/run.sh
         echo "xdg-open http://localhost:8080 2>/dev/null || open http://localhost:8080" >> portable-app/run.sh
         chmod +x portable-app/run.sh
@@ -64,6 +64,8 @@ jobs:
         echo "   ouvrez manuellement: http://localhost:8080" >> portable-app/README.txt
         echo "3. Pour arrêter: fermez la fenêtre de commande" >> portable-app/README.txt
         echo "" >> portable-app/README.txt
+        echo "REQUIS: Node.js doit être installé pour un fonctionnement optimal" >> portable-app/README.txt
+        echo "Sinon, utilisez GitHub Pages ou Live Server" >> portable-app/README.txt
         echo "L'application fonctionne entièrement hors ligne !" >> portable-app/README.txt
         
     - name: Upload portable package
