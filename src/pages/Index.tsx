@@ -6,43 +6,45 @@ import { ProductCard } from "@/components/ProductCard";
 import { Cart } from "@/components/Cart";
 import { ReceiptModal } from "@/components/ReceiptModal";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/useCart";
-import { cafeteriaStore, CATEGORIES } from "@/data/database";
-import { useToast } from "@/hooks/use-toast";
-import type { Sale } from "@/data/database";
+import { useProducts } from "@/hooks/useProducts";
+import { useSales } from "@/hooks/useSales";
+import { SaleWithItems } from "@/types/database";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Tous');
-  const [currentSale, setCurrentSale] = useState<Sale | null>(null);
+  const [currentSale, setCurrentSale] = useState<SaleWithItems | null>(null);
   const [showReceipt, setShowReceipt] = useState(false);
+  
   const { cartItems, addToCart, removeFromCart, clearCart, getCartQuantity } = useCart();
-  const { toast } = useToast();
+  const { products, categories, isLoading: productsLoading } = useProducts();
+  const { createSale, isCreating } = useSales();
 
-  const products = cafeteriaStore.getProducts();
   const filteredProducts = selectedCategory === 'Tous' 
     ? products 
-    : products.filter(product => product.category === selectedCategory);
+    : products.filter(product => product.category?.name === selectedCategory);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cartItems.length === 0) return;
 
-    const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const sale = cafeteriaStore.addSale({
-      items: cartItems,
-      total,
-      date: new Date()
-    });
-
-    setCurrentSale(sale);
-    setShowReceipt(true);
-    clearCart();
-    
-    toast({
-      title: "Vente validée!",
-      description: `Ticket N°${sale.ticketNumber} - Total: ${total.toFixed(2)}€`,
-    });
+    try {
+      const sale = await createSale(cartItems);
+      setCurrentSale(sale);
+      setShowReceipt(true);
+      clearCart();
+    } catch (error) {
+      console.error('Erreur lors de la validation:', error);
+    }
   };
+
+  if (productsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
@@ -70,17 +72,17 @@ const Index = () => {
                 >
                   Tous
                 </Button>
-                {CATEGORIES.map(category => (
+                {categories.map(category => (
                   <Button
-                    key={category}
-                    variant={selectedCategory === category ? 'default' : 'outline'}
-                    onClick={() => setSelectedCategory(category)}
-                    className={selectedCategory === category 
+                    key={category.id}
+                    variant={selectedCategory === category.name ? 'default' : 'outline'}
+                    onClick={() => setSelectedCategory(category.name)}
+                    className={selectedCategory === category.name 
                       ? 'bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600' 
                       : 'hover:bg-white/60'
                     }
                   >
-                    {category}
+                    {category.name}
                   </Button>
                 ))}
               </div>
@@ -107,6 +109,7 @@ const Index = () => {
                   onRemoveItem={removeFromCart}
                   onClearCart={clearCart}
                   onCheckout={handleCheckout}
+                  isProcessing={isCreating}
                 />
               </div>
             </div>

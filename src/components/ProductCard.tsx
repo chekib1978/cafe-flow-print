@@ -3,11 +3,11 @@ import { Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { Product } from "@/data/database";
+import type { ProductWithCategory } from "@/types/database";
 
 interface ProductCardProps {
-  product: Product;
-  onAddToCart: (product: Product) => void;
+  product: ProductWithCategory;
+  onAddToCart: (product: ProductWithCategory) => void;
   onRemoveFromCart: (productId: string) => void;
   cartQuantity: number;
 }
@@ -21,7 +21,7 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
             <div className="flex-1">
               <h3 className="font-semibold text-gray-800 text-sm leading-tight">{product.name}</h3>
               <Badge variant="secondary" className="mt-1 text-xs bg-blue-100 text-blue-700">
-                {product.category}
+                {product.category?.name || 'Sans catégorie'}
               </Badge>
             </div>
             <div className="text-right">

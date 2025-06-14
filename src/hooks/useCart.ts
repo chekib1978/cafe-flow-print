@@ -1,11 +1,11 @@
 
 import { useState } from 'react';
-import type { Product, CartItem } from '@/data/database';
+import type { ProductWithCategory, CartItem } from '@/types/database';
 
 export function useCart() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: ProductWithCategory) => {
     setCartItems(currentItems => {
       const existingItem = currentItems.find(item => item.id === product.id);
       

@@ -3,10 +3,10 @@ import { useState, useRef } from "react";
 import { X, Printer, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { Sale } from "@/data/database";
+import type { SaleWithItems } from "@/types/database";
 
 interface ReceiptModalProps {
-  sale: Sale | null;
+  sale: SaleWithItems | null;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -24,7 +24,7 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
     printWindow.document.write(`
       <html>
         <head>
-          <title>Ticket de Caisse - ${sale?.ticketNumber}</title>
+          <title>Ticket de Caisse - ${sale?.ticket_number}</title>
           <style>
             body { 
               font-family: 'Courier New', monospace; 
@@ -67,6 +67,8 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
 
   if (!sale) return null;
 
+  const saleDate = new Date(sale.created_at);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
@@ -91,23 +93,23 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
             <div className="separator"></div>
             
             <div className="receipt-line bold">
-              <span>Ticket N°: {sale.ticketNumber}</span>
+              <span>Ticket N°: {sale.ticket_number}</span>
             </div>
             <div className="receipt-line">
-              <span>Date: {sale.date.toLocaleDateString('fr-FR')}</span>
-              <span>Heure: {sale.date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
+              <span>Date: {saleDate.toLocaleDateString('fr-FR')}</span>
+              <span>Heure: {saleDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
             
             <div className="separator"></div>
             
-            {sale.items.map((item, index) => (
+            {sale.sale_items.map((item, index) => (
               <div key={index}>
                 <div className="receipt-line">
-                  <span>{item.name}</span>
+                  <span>{item.product_name}</span>
                 </div>
                 <div className="receipt-line">
-                  <span>{item.quantity} × {item.price.toFixed(2)}€</span>
-                  <span>{(item.quantity * item.price).toFixed(2)}€</span>
+                  <span>{item.quantity} × {item.unit_price.toFixed(2)}€</span>
+                  <span>{item.total_price.toFixed(2)}€</span>
                 </div>
               </div>
             ))}

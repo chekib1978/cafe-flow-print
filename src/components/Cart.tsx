@@ -1,18 +1,19 @@
 
-import { ShoppingCart, Trash2, Receipt } from "lucide-react";
+import { ShoppingCart, Trash2, Receipt, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { CartItem } from "@/data/database";
+import type { CartItem } from "@/types/database";
 
 interface CartProps {
   items: CartItem[];
   onRemoveItem: (productId: string) => void;
   onClearCart: () => void;
   onCheckout: () => void;
+  isProcessing?: boolean;
 }
 
-export function Cart({ items, onRemoveItem, onClearCart, onCheckout }: CartProps) {
+export function Cart({ items, onRemoveItem, onClearCart, onCheckout, isProcessing = false }: CartProps) {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -54,6 +55,7 @@ export function Cart({ items, onRemoveItem, onClearCart, onCheckout }: CartProps
                   variant="ghost"
                   onClick={() => onRemoveItem(item.id)}
                   className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-500"
+                  disabled={isProcessing}
                 >
                   <Trash2 className="w-3 h-3" />
                 </Button>
@@ -74,16 +76,22 @@ export function Cart({ items, onRemoveItem, onClearCart, onCheckout }: CartProps
             <Button
               variant="outline"
               onClick={onClearCart}
+              disabled={isProcessing}
               className="flex-1 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
             >
               Vider
             </Button>
             <Button
               onClick={onCheckout}
+              disabled={isProcessing}
               className="flex-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-semibold"
             >
-              <Receipt className="w-4 h-4 mr-2" />
-              Valider
+              {isProcessing ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Receipt className="w-4 h-4 mr-2" />
+              )}
+              {isProcessing ? 'Traitement...' : 'Valider'}
             </Button>
           </div>
         </div>
