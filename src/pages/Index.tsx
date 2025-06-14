@@ -10,7 +10,21 @@ import { useCart } from "@/hooks/useCart";
 import { useProducts } from "@/hooks/useProducts";
 import { useSales } from "@/hooks/useSales";
 import { SaleWithItems } from "@/types/database";
-import { Loader2, Store, Sparkles } from "lucide-react";
+import { 
+  Loader2, 
+  Store, 
+  Sparkles, 
+  Coffee, 
+  Sandwich, 
+  IceCream, 
+  Cookie, 
+  Soup, 
+  Pizza, 
+  Salad, 
+  Cake,
+  Utensils,
+  Apple
+} from "lucide-react";
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Tous');
@@ -24,6 +38,33 @@ const Index = () => {
   const filteredProducts = selectedCategory === 'Tous' 
     ? products 
     : products.filter(product => product.category?.name === selectedCategory);
+
+  // Fonction pour obtenir l'icône appropriée selon le nom de la catégorie
+  const getCategoryIcon = (categoryName: string) => {
+    const name = categoryName.toLowerCase();
+    
+    if (name.includes('boisson') || name.includes('café') || name.includes('thé')) {
+      return Coffee;
+    } else if (name.includes('sandwich') || name.includes('burger') || name.includes('wrap')) {
+      return Sandwich;
+    } else if (name.includes('glace') || name.includes('ice') || name.includes('frozen')) {
+      return IceCream;
+    } else if (name.includes('biscuit') || name.includes('cookie') || name.includes('gâteau sec')) {
+      return Cookie;
+    } else if (name.includes('soupe') || name.includes('soup') || name.includes('potage')) {
+      return Soup;
+    } else if (name.includes('pizza') || name.includes('pâte')) {
+      return Pizza;
+    } else if (name.includes('salade') || name.includes('salad') || name.includes('crudité')) {
+      return Salad;
+    } else if (name.includes('gâteau') || name.includes('cake') || name.includes('pâtisserie')) {
+      return Cake;
+    } else if (name.includes('fruit') || name.includes('pomme') || name.includes('banane')) {
+      return Apple;
+    } else {
+      return Utensils; // Icône par défaut pour les autres catégories
+    }
+  };
 
   const handleCheckout = async () => {
     if (cartItems.length === 0) return;
@@ -76,7 +117,7 @@ const Index = () => {
 
           <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
             <div className="xl:col-span-3 space-y-6">
-              {/* Filtres par catégorie modernisés */}
+              {/* Filtres par catégorie modernisés avec icônes */}
               <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
                 <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
                   <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
@@ -91,21 +132,26 @@ const Index = () => {
                       : 'hover:bg-white/80 border-gray-200 hover:border-gray-300 transition-all duration-200'
                     }
                   >
+                    <Store className="w-4 h-4 mr-2" />
                     Tous les produits
                   </Button>
-                  {categories.map(category => (
-                    <Button
-                      key={category.id}
-                      variant={selectedCategory === category.name ? 'default' : 'outline'}
-                      onClick={() => setSelectedCategory(category.name)}
-                      className={selectedCategory === category.name 
-                        ? 'bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 shadow-lg transform hover:scale-105 transition-all duration-200' 
-                        : 'hover:bg-white/80 border-gray-200 hover:border-gray-300 transition-all duration-200'
-                      }
-                    >
-                      {category.name}
-                    </Button>
-                  ))}
+                  {categories.map(category => {
+                    const IconComponent = getCategoryIcon(category.name);
+                    return (
+                      <Button
+                        key={category.id}
+                        variant={selectedCategory === category.name ? 'default' : 'outline'}
+                        onClick={() => setSelectedCategory(category.name)}
+                        className={selectedCategory === category.name 
+                          ? 'bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 shadow-lg transform hover:scale-105 transition-all duration-200' 
+                          : 'hover:bg-white/80 border-gray-200 hover:border-gray-300 transition-all duration-200'
+                        }
+                      >
+                        <IconComponent className="w-4 h-4 mr-2" />
+                        {category.name}
+                      </Button>
+                    );
+                  })}
                 </div>
               </div>
 
