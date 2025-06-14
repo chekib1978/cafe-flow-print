@@ -46,8 +46,8 @@ export function useSales() {
 
       if (saleError) throw saleError;
 
-      // Créer les articles de la vente
-      const saleItems = cartItems.map(item => ({
+      // Créer les articles de la vente et récupérer les IDs
+      const saleItemsData = cartItems.map(item => ({
         sale_id: sale.id,
         product_id: item.id,
         product_name: item.name,
@@ -56,9 +56,10 @@ export function useSales() {
         total_price: item.price * item.quantity,
       }));
 
-      const { error: itemsError } = await supabase
+      const { data: insertedSaleItems, error: itemsError } = await supabase
         .from('sale_items')
-        .insert(saleItems);
+        .insert(saleItemsData)
+        .select();
 
       if (itemsError) throw itemsError;
 
@@ -73,7 +74,7 @@ export function useSales() {
         if (stockError) throw stockError;
       }
 
-      return { ...sale, sale_items: saleItems };
+      return { ...sale, sale_items: insertedSaleItems || [] };
     },
     onSuccess: (newSale) => {
       queryClient.invalidateQueries({ queryKey: ['sales'] });
