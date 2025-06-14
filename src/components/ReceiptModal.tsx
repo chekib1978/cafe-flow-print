@@ -1,11 +1,14 @@
 
 import { useState, useRef } from "react";
-import { X, Printer, Download, Receipt } from "lucide-react";
+import { X, Printer, Download, Receipt, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { SaleWithItems } from "@/types/database";
 import { formatPrice } from "@/types/database";
 import { useCafeteriaSettings } from "@/hooks/useCafeteriaSettings";
+import { useWindowsPrinters } from "@/hooks/useWindowsPrinters";
+import { useToast } from "@/hooks/use-toast";
 
 interface ReceiptModalProps {
   sale: SaleWithItems | null;
@@ -15,14 +18,30 @@ interface ReceiptModalProps {
 
 export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
   const receiptRef = useRef<HTMLDivElement>(null);
+  const [selectedPrinter, setSelectedPrinter] = useState<string>('');
+  const { toast } = useToast();
 
   // Récupère les infos de paramétrage du cafétéria
   const { settings } = useCafeteriaSettings();
+  
+  // Récupère les imprimantes Windows
+  const { printers, isLoading: printersLoading, refreshPrinters } = useWindowsPrinters();
 
   // S'assurer que handlePrint N'EST appelé que sur le bouton Imprimer
   const handlePrint = () => {
     const printContent = receiptRef.current;
     if (!printContent) return;
+
+    // Afficher l'imprimante sélectionnée dans un toast
+    if (selectedPrinter) {
+      const printer = printers.find(p => p.name === selectedPrinter);
+      if (printer) {
+        toast({
+          title: "Impression en cours",
+          description: `Envoi vers: ${printer.name}`,
+        });
+      }
+    }
 
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
@@ -156,6 +175,60 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
         </DialogHeader>
         
         <div className="space-y-6">
+          {/* Sélection d'imprimante */}
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-sm font-medium text-blue-800 flex items-center gap-2">
+                <Printer className="w-4 h-4" />
+                Imprimante Windows
+              </label>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={refreshPrinters}
+                disabled={printersLoading}
+                className="text-xs"
+              >
+                <Settings className="w-3 h-3 mr-1" />
+                Actualiser
+              </Button>
+            </div>
+            
+            <Select value={selectedPrinter} onValueChange={setSelectedPrinter}>
+              <SelectTrigger className="bg-white">
+                <SelectValue placeholder={printersLoading ? "Recherche..." : "Sélectionner une imprimante"} />
+              </SelectTrigger>
+              <SelectContent>
+                {printers.length === 0 ? (
+                  <SelectItem value="none" disabled>
+                    {printersLoading ? "Recherche..." : "Aucune imprimante trouvée"}
+                  </SelectItem>
+                ) : (
+                  printers.map((printer) => (
+                    <SelectItem key={printer.name} value={printer.name}>
+                      <div className="flex items-center gap-2">
+                        <span>{printer.name}</span>
+                        {printer.isDefault && (
+                          <span className="text-xs bg-blue-100 text-blue-700 px-1 rounded">
+                            Défaut
+                          </span>
+                        )}
+                        <span className={`text-xs px-1 rounded ${
+                          printer.status === 'Ready' 
+                            ? 'bg-green-100 text-green-700' 
+                            : 'bg-red-100 text-red-700'
+                        }`}>
+                          {printer.status}
+                        </span>
+                      </div>
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Aperçu du ticket */}
           <div ref={receiptRef} className="bg-white p-4 font-mono text-sm border rounded-xl shadow-lg">
             {/* En-tête du magasin : infos dynamiques */}
             <div className="center large">{settings?.name || "CAFETERIA PRO"}</div>
@@ -170,9 +243,9 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
             ) : (
               <div className="center store-info">Email: contact@cafeteria-pro.tn</div>
             )}
-            {/* On peut aussi indiquer le modèle d'imprimante s'il est sélectionné */}
-            {settings?.printer_model && settings.printer_model.trim() !== "" && (
-              <div className="center store-info">Imprimante: {settings.printer_model}</div>
+            {/* Afficher l'imprimante sélectionnée */}
+            {selectedPrinter && (
+              <div className="center store-info">Imprimante: {selectedPrinter}</div>
             )}
 
             <div className="separator"></div>
@@ -240,10 +313,11 @@ export function ReceiptModal({ sale, isOpen, onClose }: ReceiptModalProps) {
             {/* Impression seulement au clic */}
             <Button 
               onClick={handlePrint} 
+              disabled={!selectedPrinter || printersLoading}
               className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-200"
             >
               <Printer className="w-4 h-4 mr-2" />
-              Imprimer Ticket
+              {selectedPrinter ? `Imprimer sur ${selectedPrinter.split(' ')[0]}...` : 'Sélectionner une imprimante'}
             </Button>
             <Button 
               variant="outline" 
