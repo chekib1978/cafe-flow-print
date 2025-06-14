@@ -1,5 +1,5 @@
 
-import { Plus, Minus, Package } from "lucide-react";
+import { Plus, Minus, Coffee, Sandwich, IceCream, Cookie, Soup, Pizza, Salad, Cake, Utensils, Apple } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,10 +13,39 @@ interface ProductCardProps {
   cartQuantity: number;
 }
 
+// Fonction pour obtenir l'icône appropriée selon le nom de la catégorie
+const getCategoryIcon = (categoryName: string) => {
+  const name = categoryName.toLowerCase();
+  
+  if (name.includes('boisson') || name.includes('café') || name.includes('thé')) {
+    return Coffee;
+  } else if (name.includes('sandwich') || name.includes('burger') || name.includes('wrap')) {
+    return Sandwich;
+  } else if (name.includes('glace') || name.includes('ice') || name.includes('frozen')) {
+    return IceCream;
+  } else if (name.includes('biscuit') || name.includes('cookie') || name.includes('gâteau sec')) {
+    return Cookie;
+  } else if (name.includes('soupe') || name.includes('soup') || name.includes('potage')) {
+    return Soup;
+  } else if (name.includes('pizza') || name.includes('pâte')) {
+    return Pizza;
+  } else if (name.includes('salade') || name.includes('salad') || name.includes('crudité')) {
+    return Salad;
+  } else if (name.includes('gâteau') || name.includes('cake') || name.includes('pâtisserie')) {
+    return Cake;
+  } else if (name.includes('fruit') || name.includes('pomme') || name.includes('banane')) {
+    return Apple;
+  } else {
+    return Utensils; // Icône par défaut pour les autres catégories
+  }
+};
+
 export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuantity }: ProductCardProps) {
   const categoryColor = product.category?.name 
     ? CATEGORY_COLORS[product.category.name as keyof typeof CATEGORY_COLORS] || CATEGORY_COLORS.default
     : CATEGORY_COLORS.default;
+
+  const CategoryIcon = getCategoryIcon(product.category?.name || '');
 
   return (
     <Card className="group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-0 shadow-lg bg-white/90 backdrop-blur-md overflow-hidden relative">
@@ -29,7 +58,7 @@ export function ProductCard({ product, onAddToCart, onRemoveFromCart, cartQuanti
           <div className="flex justify-between items-start">
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-2">
-                <Package className="w-4 h-4 text-gray-400" />
+                <CategoryIcon className="w-4 h-4 text-gray-400" />
                 <h3 className="font-bold text-gray-800 text-base leading-tight group-hover:text-gray-900 transition-colors">
                   {product.name}
                 </h3>
